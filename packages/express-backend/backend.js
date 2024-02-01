@@ -38,16 +38,10 @@ const users = {
   ]
 };
 
-const findUserByName = (name) => {
-  return users["users_list"].filter(
-    (user) => user["name"] === name
-  );
-};
-
-const findUserById = (id) =>
-      users["users_list"].find((user) => user["id"] === id);
+const generateRandomId = () => Math.floor(Math.random() * 1000);
 
 const addUser = (user) => {
+  user.id = generateRandomId();
   users["users_list"].push(user);
   return user;
 };
@@ -62,21 +56,20 @@ const deleteUserById = (id) => {
   }
 };
 
+app.post("/users", (req, res) => {
+  const userToAdd = req.body;
+  const addedUser = addUser(userToAdd);
+  res.status(201).json(addedUser);
+});
+
 app.delete("/users/:id", (req, res) => {
   const id = req.params.id;
   const deletedUser = deleteUserById(id);
   if (deletedUser !== null) {
-    res.send(deletedUser);
+    res.status(204).send();
   } else {
     res.status(404).send("Resource not found.");
   }
-});
-
-
-app.post("/users", (req, res) => {
-  const userToAdd = req.body;
-  addUser(userToAdd);
-  res.send();
 });
 
 app.get("/users/:id", (req, res) => {
@@ -101,15 +94,20 @@ app.get("/users", (req, res) => {
   }
 });
 
+const findUserByName = (name) => {
+  return users["users_list"].filter(
+    (user) => user["name"] === name
+  );
+};
+
+const findUserById = (id) =>
+      users["users_list"].find((user) => user["id"] === id);
+
 app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
-});
-
-app.get("/users", (req, res) => {
-  res.send(users);
 });
 
 app.listen(port, () => {
