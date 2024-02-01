@@ -7,7 +7,7 @@ function MyApp() {
 
   function removeOneCharacter(id) {
       fetch('http://localhost:8000/users/${id}', { method: 'DELETE' })
-	  .then(res) => {
+	  .then((res) => {
 	      if (res.status === 204) {
 		  setCharacters(characters.filter(character => character.id !== id));
 	      } else {
