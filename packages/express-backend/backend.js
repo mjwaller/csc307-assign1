@@ -56,6 +56,20 @@ const deleteUserById = (id) => {
   }
 };
 
+const findUserByName = (name) => {
+  return users["users_list"].filter(
+    (user) => user["name"] === name
+  );
+};
+
+const findUserById = (id) =>
+      users["users_list"].find((user) => user["id"] === id);
+
+
+
+app.use(cors());
+app.use(express.json());
+
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
   const addedUser = addUser(userToAdd);
@@ -93,18 +107,6 @@ app.get("/users", (req, res) => {
     res.send(users);
   }
 });
-
-const findUserByName = (name) => {
-  return users["users_list"].filter(
-    (user) => user["name"] === name
-  );
-};
-
-const findUserById = (id) =>
-      users["users_list"].find((user) => user["id"] === id);
-
-app.use(cors());
-app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
