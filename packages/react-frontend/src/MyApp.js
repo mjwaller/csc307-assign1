@@ -6,32 +6,34 @@ function MyApp() {
   const [characters, setCharacters] = useState([]);
 
   function removeOneCharacter(id) {
-      fetch('http://localhost:8000/users/${id}', { method: 'DELETE' })
-	  .then((res) => {
-	      if (res.status === 204) {
-		  setCharacters(characters.filter(character => character._id !== id));
-	      } else {
-		  throw new Error('Error: Failed to delete user');
-	      }
-	  })
-	.catch((error) => {
-	    console.log(error);
-	});
+    fetch(`http://localhost:8000/users/${id}`, { method: 'DELETE' })
+        .then((res) => {
+            if (res.status === 204) {
+                setCharacters(characters.filter(character => character._id !== id));
+            } else {
+                throw new Error('Error: Failed to delete user');
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 }
 
     function updateList(person) {
-	postUser(person)
-	    .then((res) => {
-		if (res.status == 201) {
-		    return res.json();
-		} else {
-		    throw new Error('Error: Failed to add user');
-		}
-	    })
-	    .then(() =>setCharacters([...characters, person]))
-	    .catch((error) => {
-		console.log(error);
-	    });
+        postUser(person)
+            .then((res) => {
+                if (res.status === 201) {
+                    return res.json();
+                } else {
+                    throw new Error('Error: Failed to add user');
+                }
+            })
+            .then((newUser) => {
+                setCharacters([...characters, newUser]); 
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     function fetchUsers() {
@@ -50,14 +52,15 @@ function MyApp() {
 	return promise;
     }
 
-    useEffect(() => {
-	fetchUsers()
-	  .then((res) => res.json())
-	  .then((json) => setCharacters(json["users_list"]))
-	    .catch((error) => {
-		console.log(error);
-	    });
-    },[] );
+   useEffect(() => {
+    fetchUsers()
+        .then((res) => res.json())
+        .then((json) => setCharacters(json))
+        .catch((error) => {
+            console.log(error);
+        });
+}, []); 
+    
     return (
 	<div className="container">
 	    <Table
